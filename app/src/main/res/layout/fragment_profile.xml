@@ -26,27 +26,24 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/imageView" />
 
-    <TextView
+    <com.google.android.material.chip.Chip
         android:id="@+id/tv_profile_tag"
-        android:layout_width="150dp"
-        android:layout_height="50dp"
-        android:background="@drawable/tag_shape"
-        android:gravity="center"
-        android:text="Какой-то тег"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:chipIcon="@drawable/ic_baseline_add_24"
+        android:text="Добавить тег"
         android:layout_marginTop="16dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/tv_profile_num" />
 
-    <TextView
+    <com.google.android.material.chip.Chip
         android:id="@+id/tv_spam_count"
-        android:layout_width="150dp"
-        android:layout_height="50dp"
-        android:background="@drawable/tag_shape"
-        android:gravity="center"
-        android:text="Спам:"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Спам: 0"
         android:layout_marginTop="16dp"
-        android:textColor="@color/design_default_color_error"
+        android:textColor="@color/missed_call"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/tv_profile_tag" />

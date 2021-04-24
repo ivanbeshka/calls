@@ -24,7 +24,8 @@ import java.util.Date;
 
 public class MainFragment extends Fragment {
     private RecyclerView recyclerView;
-    public MainFragment(){
+
+    public MainFragment() {
         super(R.layout.fragment_main);
     }
 
@@ -33,7 +34,7 @@ public class MainFragment extends Fragment {
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_main, container, false);
 
-        ActionBar actionBar = ((MainActivity)getActivity()).getSupportActionBar();
+        ActionBar actionBar = ((MainActivity) getActivity()).getSupportActionBar();
         actionBar.setTitle(R.string.app_name);
         actionBar.setDisplayHomeAsUpEnabled(false);
 
@@ -59,19 +60,42 @@ public class MainFragment extends Fragment {
         int number = managedCursor.getColumnIndex(CallLog.Calls.NUMBER);
         int date = managedCursor.getColumnIndex(CallLog.Calls.DATE);
         int duration = managedCursor.getColumnIndex(CallLog.Calls.DURATION);
+        int name = managedCursor.getColumnIndex(CallLog.Calls.CACHED_NAME);
 
         while (managedCursor.moveToNext()) {
             String phNumber = managedCursor.getString(number);
             String callDate = managedCursor.getString(date);
             int currentDuration = managedCursor.getInt(duration);
+            String cachedName = managedCursor.getString(name);
 
             SimpleDateFormat format = new SimpleDateFormat("MM-dd-yy HH:mm");
             String callDayTime = format.format(new Date(Long.valueOf(callDate)));
 
-            calls.add(new Call(phNumber, callDayTime, currentDuration));
+            calls.add(new Call(phNumber, callDayTime, currentDuration, 1, cachedName));
         }
         managedCursor.close();
 
-        return calls;
+        return getSortedCalls(calls);
+    }
+
+    private ArrayList<Call> getSortedCalls(ArrayList<Call> calls){
+        ArrayList<Call> sortedCalls = new ArrayList<>();
+        boolean first = true;
+        for (Call call : calls) {
+            if (first) {
+                sortedCalls.add(call);
+                first = false;
+                continue;
+            }
+
+            Call last = sortedCalls.get(sortedCalls.size() - 1);
+            if (call.getNum().equals(last.getNum()) &&
+                    ((call.getDuration() > 0 && last.getDuration() > 0) || (call.getDuration() == 0 && last.getDuration() == 0))) {
+                last.setCallsNum(last.getCallsNum() + 1);
+            }else {
+                sortedCalls.add(call);
+            }
+        }
+        return sortedCalls;
     }
 }

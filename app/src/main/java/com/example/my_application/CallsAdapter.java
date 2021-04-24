@@ -92,14 +92,21 @@ public class CallsAdapter extends RecyclerView.Adapter<CallsAdapter.ViewHolder> 
 
     // Replace the contents of a view (invoked by the layout manager)
     @Override
-    public void onBindViewHolder(ViewHolder viewHolder, final int position) {
+    public void onBindViewHolder(@NotNull ViewHolder viewHolder, final int position) {
 
         // Get element from your dataset at this position and replace the
         // contents of the view with that element
-        viewHolder.tvCallNum.setText(calls.get(position).getNum());
-        viewHolder.tvCallTime.setText(calls.get(position).getDate());
+        Call currentCall = calls.get(position);
+        String callsNum = currentCall.getCallsNum() > 1 ? " (" + currentCall.getCallsNum() + ")" : "";
+        if (currentCall.getCachedName() != null && !currentCall.getCachedName().isEmpty()){
+            viewHolder.tvCallNum.setText(currentCall.getCachedName() + callsNum);
+        }else {
+            viewHolder.tvCallNum.setText(currentCall.getNum() + callsNum);
+        }
 
-        if (calls.get(position).getDuration() == 0){
+        viewHolder.tvCallTime.setText(currentCall.getDate());
+
+        if (currentCall.getDuration() == 0){
             int color = viewHolder.tvCallNum.getResources().getColor(R.color.missed_call);
             viewHolder.tvCallNum.setTextColor(color);
         } else {
