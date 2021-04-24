@@ -60,12 +60,10 @@ public class CallsAdapter extends RecyclerView.Adapter<CallsAdapter.ViewHolder> 
         viewHolder.tvCallTime.setText(calls.get(position).getDate());
 
         if (calls.get(position).getDuration() == 0){
-            int color = viewHolder.itemView.getResources().getColor(R.color.missed_call);
-            viewHolder.itemView.setBackgroundColor(color);
+            int color = viewHolder.tvCallNum.getResources().getColor(R.color.missed_call);
+            viewHolder.tvCallNum.setTextColor(color);
         } else {
-            TypedValue a = new TypedValue();
-            viewHolder.itemView.getContext().getTheme().resolveAttribute(android.R.attr.windowBackground, a, true);
-            viewHolder.itemView.setBackgroundColor(a.data);
+            viewHolder.tvCallNum.setTextColor(viewHolder.tvCallTime.getCurrentTextColor());
         }
     }
 
