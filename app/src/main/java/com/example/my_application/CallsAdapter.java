@@ -3,6 +3,7 @@ package com.example.my_application;
 import android.content.ClipData;
 import android.content.ClipboardManager;
 import android.content.Context;
+import android.os.Bundle;
 import android.util.Log;
 import android.util.TypedValue;
 import android.view.LayoutInflater;
@@ -46,8 +47,10 @@ public class CallsAdapter extends RecyclerView.Adapter<CallsAdapter.ViewHolder> 
             tvCallTime = view.findViewById(R.id.call_date);
 
             tvCallNum.setOnClickListener(textView -> {
+                Bundle bundle = new Bundle();
+                bundle.putString(ProfileFragment.phoneNum, tvCallNum.getText().toString());
                 NavHostFragment navFragment = (NavHostFragment) ((AppCompatActivity) view.getContext()).getSupportFragmentManager().findFragmentById(R.id.nav_host_fragment);
-                navFragment.getNavController().navigate(R.id.action_mainFragment_to_profileFragment);
+                navFragment.getNavController().navigate(R.id.action_mainFragment_to_profileFragment, bundle);
             });
 
             ibPopUpMenu.setOnClickListener(view1 -> {
