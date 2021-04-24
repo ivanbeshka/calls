@@ -47,33 +47,6 @@ public class CallsAdapter extends RecyclerView.Adapter<CallsAdapter.ViewHolder> 
             ibPopUpMenu = view.findViewById(R.id.iv_call_more);
             tvCallNum = view.findViewById(R.id.call_num);
             tvCallTime = view.findViewById(R.id.call_date);
-
-            tvCallNum.setOnClickListener(textView -> {
-                Bundle bundle = new Bundle();
-                bundle.putString(ProfileFragment.phoneNum, tvCallNum.getText().toString());
-                NavHostFragment navFragment = (NavHostFragment) ((AppCompatActivity) view.getContext()).getSupportFragmentManager().findFragmentById(R.id.nav_host_fragment);
-                navFragment.getNavController().navigate(R.id.action_mainFragment_to_profileFragment, bundle);
-            });
-
-            ibPopUpMenu.setOnClickListener(view1 -> {
-                PopupMenu popup = new PopupMenu(view.getContext(), view1);
-                popup.setOnMenuItemClickListener(menu -> {
-                    switch (menu.getItemId()){
-                        case R.id.copy:
-                            ClipboardManager clipboard = (ClipboardManager) view.getContext().getSystemService(Context.CLIPBOARD_SERVICE);
-                            ClipData clip = ClipData.newPlainText("Number", tvCallNum.getText());
-                            clipboard.setPrimaryClip(clip);
-                            return true;
-                        case R.id.spam:
-                            return true;
-                        default:
-                            return false;
-                    }
-                });
-                MenuInflater inflater = popup.getMenuInflater();
-                inflater.inflate(R.menu.call_menu, popup.getMenu());
-                popup.show();
-            });
         }
     }
 
@@ -99,6 +72,8 @@ public class CallsAdapter extends RecyclerView.Adapter<CallsAdapter.ViewHolder> 
         // Get element from your dataset at this position and replace the
         // contents of the view with that element
         Call currentCall = calls.get(position);
+
+        //call number
         String callsNum = currentCall.getCallsNum() > 1 ? " (" + currentCall.getCallsNum() + ")" : "";
         if (currentCall.getCachedName() != null && !currentCall.getCachedName().isEmpty()){
             viewHolder.tvCallNum.setText(currentCall.getCachedName() + callsNum);
@@ -106,16 +81,50 @@ public class CallsAdapter extends RecyclerView.Adapter<CallsAdapter.ViewHolder> 
             viewHolder.tvCallNum.setText(currentCall.getNum() + callsNum);
         }
 
-        SimpleDateFormat format = new SimpleDateFormat("MM-dd-yy HH:mm");
+        //date
+        SimpleDateFormat format = new SimpleDateFormat("dd-MM-yy HH:mm");
         String callDayTime = format.format(currentCall.getDate());
         viewHolder.tvCallTime.setText(callDayTime);
 
+        //number color
         if (currentCall.getDuration() == 0){
             int color = viewHolder.tvCallNum.getResources().getColor(R.color.missed_call);
             viewHolder.tvCallNum.setTextColor(color);
         } else {
             viewHolder.tvCallNum.setTextColor(viewHolder.tvCallTime.getCurrentTextColor());
         }
+
+        setCallMenuClickListener(viewHolder, currentCall);
+
+        viewHolder.tvCallNum.setOnClickListener(textView -> {
+            Bundle bundle = new Bundle();
+            bundle.putString(ProfileFragment.phoneNum, currentCall.getNum() + " (" + currentCall.getCachedName() + ")");
+            NavHostFragment navFragment = (NavHostFragment) ((AppCompatActivity) textView.getContext()).getSupportFragmentManager().findFragmentById(R.id.nav_host_fragment);
+            navFragment.getNavController().navigate(R.id.action_mainFragment_to_profileFragment, bundle);
+        });
+    }
+
+    private void setCallMenuClickListener(@NotNull ViewHolder viewHolder, Call currentCall) {
+        viewHolder.ibPopUpMenu.setOnClickListener(view -> {
+            PopupMenu popup = new PopupMenu(view.getContext(), view);
+            popup.setOnMenuItemClickListener(menu -> {
+                switch (menu.getItemId()){
+                    case R.id.copy:
+                        ClipboardManager clipboard = (ClipboardManager) view.getContext().getSystemService(Context.CLIPBOARD_SERVICE);
+                        ClipData clip = ClipData.newPlainText("Number", currentCall.getNum());
+                        clipboard.setPrimaryClip(clip);
+                        return true;
+                    case R.id.spam:
+                        return true;
+                    default:
+                        return false;
+                }
+            });
+
+            MenuInflater inflater = popup.getMenuInflater();
+            inflater.inflate(R.menu.call_menu, popup.getMenu());
+            popup.show();
+        });
     }
 
     // Return the size of your dataset (invoked by the layout manager)
