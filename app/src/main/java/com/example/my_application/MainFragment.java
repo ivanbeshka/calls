@@ -4,7 +4,6 @@ import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.CallLog;
-import android.view.InflateException;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -18,9 +17,11 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.my_application.data.Call;
 
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
 import java.util.Date;
+import java.util.stream.Collector;
 
 public class MainFragment extends Fragment {
     private RecyclerView recyclerView;
@@ -68,17 +69,17 @@ public class MainFragment extends Fragment {
             int currentDuration = managedCursor.getInt(duration);
             String cachedName = managedCursor.getString(name);
 
-            SimpleDateFormat format = new SimpleDateFormat("MM-dd-yy HH:mm");
-            String callDayTime = format.format(new Date(Long.valueOf(callDate)));
+            Date currentDate = new Date(Long.parseLong(callDate));
 
-            calls.add(new Call(phNumber, callDayTime, currentDuration, 1, cachedName));
+            calls.add(new Call(phNumber, currentDate, currentDuration, 1, cachedName));
         }
         managedCursor.close();
 
+        Collections.sort(calls);
         return getSortedCalls(calls);
     }
 
-    private ArrayList<Call> getSortedCalls(ArrayList<Call> calls){
+    private ArrayList<Call> getSortedCalls(ArrayList<Call> calls) {
         ArrayList<Call> sortedCalls = new ArrayList<>();
         boolean first = true;
         for (Call call : calls) {
@@ -92,7 +93,7 @@ public class MainFragment extends Fragment {
             if (call.getNum().equals(last.getNum()) &&
                     ((call.getDuration() > 0 && last.getDuration() > 0) || (call.getDuration() == 0 && last.getDuration() == 0))) {
                 last.setCallsNum(last.getCallsNum() + 1);
-            }else {
+            } else {
                 sortedCalls.add(call);
             }
         }

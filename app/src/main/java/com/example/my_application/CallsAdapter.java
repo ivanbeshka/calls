@@ -25,7 +25,9 @@ import com.example.my_application.data.Call;
 
 import org.jetbrains.annotations.NotNull;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 
 import static android.content.ContentValues.TAG;
 
@@ -104,7 +106,9 @@ public class CallsAdapter extends RecyclerView.Adapter<CallsAdapter.ViewHolder> 
             viewHolder.tvCallNum.setText(currentCall.getNum() + callsNum);
         }
 
-        viewHolder.tvCallTime.setText(currentCall.getDate());
+        SimpleDateFormat format = new SimpleDateFormat("MM-dd-yy HH:mm");
+        String callDayTime = format.format(currentCall.getDate());
+        viewHolder.tvCallTime.setText(callDayTime);
 
         if (currentCall.getDuration() == 0){
             int color = viewHolder.tvCallNum.getResources().getColor(R.color.missed_call);
